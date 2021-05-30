@@ -126,6 +126,6 @@ Package:Export("SpawnFireworkGun", FireworkGun)
 Timer:SetTimeout(3000, function()
 	-- Adds the Firework Gun to the Sandbox Spawn Menu
 	-- Parameters: asset_pack, category, id, package_name, package_function_name
-	Package:Call("Sandbox", "AddSpawnMenuItem", {"TS_Fireworks", "tools", "FireworkGun", "TS_Fireworks_Tools", "SpawnFireworkGun"})
+	Package:Call("Sandbox", "AddSpawnMenuItem", {"TS_Fireworks", "tools", "FireworkGun", "nanos-world-ts-fireworks", "SpawnFireworkGun"})
 	return false
 end)
