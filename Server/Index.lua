@@ -35,8 +35,8 @@ function FireworkGun(location, rotation)
 		false,					-- Can Hold Use (keep pressing to keep firing, common to automatic weapons)
 		false,					-- Need to release to Fire (common to Bows)
 		"",						-- Bullet Trail Particle
-		"",						-- Barrel Particle
-		"",													-- Shells Particle
+		"NanosWorld::P_Weapon_BarrelSmoke",					-- Barrel Particle
+		"NanosWorld::P_Weapon_Shells_762x39",				-- Shells Particle
 		"NanosWorld::A_Pistol_Dry",							-- Weapon's Dry Sound
 		"NanosWorld::A_Pistol_Load",						-- Weapon's Load Sound
 		"NanosWorld::A_Pistol_Unload",						-- Weapon's Unload Sound
@@ -54,7 +54,7 @@ function FireworkGun(location, rotation)
 		-- We get the position at the front of the weapon
 		local control_rotation = shooter:GetControlRotation()
 		local forward_vector = control_rotation:GetForwardVector()
-		local spawn_location = shooter:GetLocation() + Vector(0, 0, 40) + forward_vector * Vector(400)
+		local spawn_location = weap:GetLocation() + Vector(0, 0, 40) + forward_vector * Vector(200)
 
 		-- We will spawn an empty/invisible Prop, to be our projectile - using our Invisible mesh 'SM_None'
 		local prop = Prop(spawn_location, control_rotation, "NanosWorld::SM_None")
@@ -69,7 +69,7 @@ function FireworkGun(location, rotation)
 		particle:AttachTo(prop)
 
 		-- Impulses the Projectile forward
-		prop:AddImpulse(forward_vector * Vector(50000), true)
+		prop:AddImpulse(forward_vector * Vector(10000), true)
 
 		-- Sets the shooter to be the Network Authority of this Projectile for the next 1000 miliseconds
 		-- This way only the shooter will be reponsible to handle the physics of this object (for 1 second)
@@ -79,7 +79,7 @@ function FireworkGun(location, rotation)
 		Events:BroadcastRemote("SpawnFireworkSound", {particle})
 
 		-- After 500 miliseconds, explode the firework
-		Timer:SetTimeout(500, function(pr)
+		Timer:SetTimeout(1500, function(pr)
 			-- Calls the client to spawn the 'Explosion' sound at the projectile location
 			Events:BroadcastRemote("ExplodeFireworkSound", {pr:GetLocation()})
 
@@ -88,7 +88,10 @@ function FireworkGun(location, rotation)
 			-- 'PS_TS_Fireworks_Burst_Chrys', 'PS_TS_Fireworks_Burst_Circle', 'PS_TS_Fireworks_Burst_Palm',
 			-- 'PS_TS_Fireworks_Burst_Shaped' and 'PS_TS_Fireworks_Burst_ShellsWithinShells'
 			local particle_asset = FireworkParticles[math.random(#FireworkParticles)]
-			local particle_burst = Particle(pr:GetLocation(), Rotator(), particle_asset, true, true)
+			local particle_burst = Particle(pr:GetLocation(), Rotator(0, pr:GetRotation().Yaw + 90, 0), particle_asset, true, true)
+
+			-- Destroys the projectile
+			pr:Destroy()
 
 			-- Those particles make it available to tweak some of their properties, let's set the BlastColor to red
 			particle_burst:SetParameterColor("BlastColor", Color.RandomPalette())
@@ -104,14 +107,13 @@ function FireworkGun(location, rotation)
 			--  float: 'BurstMulti', 'SparkleMulti'
 
 			return false
-		end, {prop})
+		end, {prop, particle})
 
-		-- After 1000 miliseconds, destroy the particle and the projectile
-		Timer:SetTimeout(1000, function(pr, pa)
-			pr:Destroy()
+		-- After 2500 miliseconds, destroy the particle (so the trail can keep a little bit longer)
+		Timer:SetTimeout(2500, function(pa)
 			pa:Destroy()
 			return false
-		end, {prop, particle})
+		end, {particle})
 	end)
 
 	return tool_gun
@@ -120,8 +122,10 @@ end
 -- Exports the function to be called by the Sandbox to spawn the Firework Tool
 Package:Export("SpawnFireworkGun", FireworkGun)
 
-Package:Subscribe("Load", function()
+-- Waits 3 seconds so the Sandbox can be loaded first
+Timer:SetTimeout(3000, function()
 	-- Adds the Firework Gun to the Sandbox Spawn Menu
 	-- Parameters: asset_pack, category, id, package_name, package_function_name
-	Package:Call("Sandbox", "AddSpawnMenuItem", {"TS_Fireworks", "tools", "firework_gun", "TS_Fireworks_Tools", "SpawnFireworkGun"})
+	Package:Call("Sandbox", "AddSpawnMenuItem", {"TS_Fireworks", "tools", "FireworkGun", "TS_Fireworks_Tools", "SpawnFireworkGun"})
+	return false
 end)
