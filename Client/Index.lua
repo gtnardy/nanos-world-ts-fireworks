@@ -11,6 +11,6 @@ end)
 
 -- Waits 3 second so the Sandbox can be loaded first
 Timer:SetTimeout(3000, function()
-	Package:Call("Sandbox", "AddSpawnMenuItem", {"TS_Fireworks", "tools", "FireworkGun", "Firework Gun", "assets/NanosWorld/SK_FlareGun.jpg"})
+	Package:Call("Sandbox", "AddSpawnMenuItem", {"TS_Fireworks", "tools", "FireworkGun", "Firework Gun", "assets///NanosWorld/SK_FlareGun.jpg"})
     return false
 end)
