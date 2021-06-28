@@ -122,8 +122,8 @@ end
 -- Exports the function to be called by the Sandbox to spawn the Firework Tool
 Package:Export("SpawnFireworkGun", FireworkGun)
 
--- Waits 100 ms so the Sandbox can be loaded first
-Timer:SetTimeout(100, function()
+
+Package:Subscribe("Load"), function()
 	-- Adds the Firework Gun to the Sandbox Spawn Menu
 	-- Parameters: asset_pack, category, id, package_name, package_function_name
 	Package:Call("Sandbox", "AddSpawnMenuItem", {"TS_Fireworks", "tools", "FireworkGun", "nanos-world-ts-fireworks", "SpawnFireworkGun"})
