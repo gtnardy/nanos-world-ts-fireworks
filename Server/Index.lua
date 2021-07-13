@@ -1,9 +1,9 @@
 FireworkParticles = {
-	"TS_Fireworks::PS_TS_Fireworks_Burst_Chrys",
-	"TS_Fireworks::PS_TS_Fireworks_Burst_Circle",
-	"TS_Fireworks::PS_TS_Fireworks_Burst_Palm",
-	"TS_Fireworks::PS_TS_Fireworks_Burst_Shaped",
-	"TS_Fireworks::PS_TS_Fireworks_Burst_ShellsWithinShells",
+	"ts-fireworks::PS_TS_Fireworks_Burst_Chrys",
+	"ts-fireworks::PS_TS_Fireworks_Burst_Circle",
+	"ts-fireworks::PS_TS_Fireworks_Burst_Palm",
+	"ts-fireworks::PS_TS_Fireworks_Burst_Shaped",
+	"ts-fireworks::PS_TS_Fireworks_Burst_ShellsWithinShells",
 }
 
 -- Function to spawn the ToolGun weapon
@@ -11,7 +11,7 @@ function FireworkGun(location, rotation)
 	local tool_gun = Weapon(
 		location or Vector(),
 		rotation or Rotator(),
-		"NanosWorld::SK_FlareGun_Short",	-- Model
+		"nanos-world::SK_FlareGun_Short",	-- Model
 		0,						-- Collision (Normal)
 		true,					-- Gravity Enabled
 		10000000,				-- Ammo in the Clip
@@ -35,17 +35,17 @@ function FireworkGun(location, rotation)
 		false,					-- Can Hold Use (keep pressing to keep firing, common to automatic weapons)
 		false,					-- Need to release to Fire (common to Bows)
 		"",						-- Bullet Trail Particle
-		"NanosWorld::P_Weapon_BarrelSmoke",					-- Barrel Particle
-		"NanosWorld::P_Weapon_Shells_762x39",				-- Shells Particle
-		"NanosWorld::A_Pistol_Dry",							-- Weapon's Dry Sound
-		"NanosWorld::A_Pistol_Load",						-- Weapon's Load Sound
-		"NanosWorld::A_Pistol_Unload",						-- Weapon's Unload Sound
-		"NanosWorld::A_AimZoom",							-- Weapon's Zooming Sound
-		"NanosWorld::A_Rattle",								-- Weapon's Aiming Sound
-		"NanosWorld::A_HeavyShot",							-- Weapon's Shot Sound
-		"NanosWorld::AM_Mannequin_Reload_Pistol",			-- Character's Reloading Animation
-		"NanosWorld::AM_Mannequin_Sight_Fire_Heavy",		-- Character's Aiming Animation
-		"NanosWorld::SM_Glock_Mag_Empty",					-- Magazine Mesh
+		"nanos-world::P_Weapon_BarrelSmoke",					-- Barrel Particle
+		"nanos-world::P_Weapon_Shells_762x39",				-- Shells Particle
+		"nanos-world::A_Pistol_Dry",							-- Weapon's Dry Sound
+		"nanos-world::A_Pistol_Load",						-- Weapon's Load Sound
+		"nanos-world::A_Pistol_Unload",						-- Weapon's Unload Sound
+		"nanos-world::A_AimZoom",							-- Weapon's Zooming Sound
+		"nanos-world::A_Rattle",								-- Weapon's Aiming Sound
+		"nanos-world::A_HeavyShot",							-- Weapon's Shot Sound
+		"nanos-world::AM_Mannequin_Reload_Pistol",			-- Character's Reloading Animation
+		"nanos-world::AM_Mannequin_Sight_Fire_Heavy",		-- Character's Aiming Animation
+		"nanos-world::SM_Glock_Mag_Empty",					-- Magazine Mesh
 		CrosshairType.Tee
 	)
 
@@ -57,7 +57,7 @@ function FireworkGun(location, rotation)
 		local spawn_location = weap:GetLocation() + Vector(0, 0, 40) + forward_vector * Vector(200)
 
 		-- We will spawn an empty/invisible Prop, to be our projectile - using our Invisible mesh 'SM_None'
-		local prop = Prop(spawn_location, control_rotation, "NanosWorld::SM_None")
+		local prop = Prop(spawn_location, control_rotation, "nanos-world::SM_None")
 
 		-- Spawns the trail/shell particle, this particle is not auto destroyed as it should follow the projectile,
 		-- this way we must destroy it manually after all
@@ -76,12 +76,12 @@ function FireworkGun(location, rotation)
 		prop:SetNetworkAuthority(shooter:GetPlayer(), 1000)
 
 		-- Calls the client to spawn the 'Launch' sound
-		Events:BroadcastRemote("SpawnFireworkSound", {particle})
+		Events.BroadcastRemote("SpawnFireworkSound", {particle})
 
-		-- After 500 miliseconds, explode the firework
-		Timer:SetTimeout(1500, function(pr)
+		-- After 1500 miliseconds, explode the firework
+		Timer.SetTimeout(1500, function(pr)
 			-- Calls the client to spawn the 'Explosion' sound at the projectile location
-			Events:BroadcastRemote("ExplodeFireworkSound", {pr:GetLocation()})
+			Events:BroadcastRemote("ExplodeFireworkSound", pr:GetLocation())
 
 			-- Spawns the Particle Explosion.
 			-- This Asset Pack also contains the following Particles, feel free to try them!
@@ -105,27 +105,24 @@ function FireworkGun(location, rotation)
 			--  Color: 'BurstColor', 'SparkleColor', 'FlareColor', 'TailColor'
 			--  bool: 'BlastSmoke', 'TailSmoke'
 			--  float: 'BurstMulti', 'SparkleMulti'
-
-			return false
-		end, {prop, particle})
+		end, 1500, prop, particle)
 
 		-- After 2500 miliseconds, destroy the particle (so the trail can keep a little bit longer)
-		Timer:SetTimeout(2500, function(pa)
+		Timer.SetTimeout(function(pa)
 			pa:Destroy()
-			return false
-		end, {particle})
+		end, 2500, particle)
 	end)
 
 	return tool_gun
 end
 
 -- Exports the function to be called by the Sandbox to spawn the Firework Tool
-Package:Export("SpawnFireworkGun", FireworkGun)
+Package.Export("SpawnFireworkGun", FireworkGun)
 
 
-Package:Subscribe("Load", function()
+Package.Subscribe("Load", function()
 	-- Adds the Firework Gun to the Sandbox Spawn Menu
 	-- Parameters: asset_pack, category, id, package_name, package_function_name
-	Package:Call("Sandbox", "AddSpawnMenuItem", {"TS_Fireworks", "tools", "FireworkGun", "nanos-world-ts-fireworks", "SpawnFireworkGun"})
+	Package.Call("sandbox", "AddSpawnMenuItem", "ts-fireworks", "tools", "FireworkGun", "ts-fireworks", "SpawnFireworkGun")
 	return false
 end)
