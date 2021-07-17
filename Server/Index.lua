@@ -123,6 +123,6 @@ Package.Export("SpawnFireworkGun", FireworkGun)
 Package.Subscribe("Load", function()
 	-- Adds the Firework Gun to the Sandbox Spawn Menu
 	-- Parameters: asset_pack, category, id, package_name, package_function_name
-	Package.Call("sandbox", "AddSpawnMenuItem", "ts-fireworks", "tools", "FireworkGun", "ts-fireworks", "SpawnFireworkGun")
+	Package.Call("sandbox", "AddSpawnMenuItem", "ts-fireworks", "tools", "FireworkGun", "ts-fireworks-tools", "SpawnFireworkGun")
 	return false
 end)
