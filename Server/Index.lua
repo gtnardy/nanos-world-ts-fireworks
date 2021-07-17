@@ -8,46 +8,25 @@ FireworkParticles = {
 
 -- Function to spawn the ToolGun weapon
 function FireworkGun(location, rotation)
-	local tool_gun = Weapon(
-		location or Vector(),
-		rotation or Rotator(),
-		"nanos-world::SK_FlareGun_Short",	-- Model
-		0,						-- Collision (Normal)
-		true,					-- Gravity Enabled
-		10000000,				-- Ammo in the Clip
-		0,						-- Ammo in the Bag
-		10000000,				-- Clip Capacity
-		0,						-- Base Damage
-		0,						-- Spread
-		1,						-- Bullet Count (1 for common weapons, > 1 for shotguns)
-		10000000,				-- Ammo to Reload (Ammo Clip for common weapons, 1 for shotguns)
-		20000,					-- Max Bullet Distance
-		20000,					-- Bullet Speed (visual only)
-		Color(),				-- Bullet Color
-		0.6,					-- Sight's FOV multiplier
-		Vector(0, 0, -13.75),	-- Sight Location
-		Rotator(-0.5, 0, 0),	-- Sight Rotation
-		Vector(2, -1.5, 0),		-- Left Hand Location
-		Rotator(0, 50, 130),	-- Left Hand Rotation
-		Vector(-35, -5, 5),		-- Right Hand Offset
-		HandlingMode.SingleHandedWeapon,
-		0.40,					-- Cadence
-		false,					-- Can Hold Use (keep pressing to keep firing, common to automatic weapons)
-		false,					-- Need to release to Fire (common to Bows)
-		"",						-- Bullet Trail Particle
-		"nanos-world::P_Weapon_BarrelSmoke",					-- Barrel Particle
-		"nanos-world::P_Weapon_Shells_762x39",				-- Shells Particle
-		"nanos-world::A_Pistol_Dry",							-- Weapon's Dry Sound
-		"nanos-world::A_Pistol_Load",						-- Weapon's Load Sound
-		"nanos-world::A_Pistol_Unload",						-- Weapon's Unload Sound
-		"nanos-world::A_AimZoom",							-- Weapon's Zooming Sound
-		"nanos-world::A_Rattle",								-- Weapon's Aiming Sound
-		"nanos-world::A_HeavyShot",							-- Weapon's Shot Sound
-		"nanos-world::AM_Mannequin_Reload_Pistol",			-- Character's Reloading Animation
-		"nanos-world::AM_Mannequin_Sight_Fire_Heavy",		-- Character's Aiming Animation
-		"nanos-world::SM_Glock_Mag_Empty",					-- Magazine Mesh
-		CrosshairType.Tee
-	)
+	local tool_gun = Weapon(location or Vector(), rotation or Rotator(), "nanos-world::SK_FlareGun_Short")
+
+	tool_gun:SetAmmoSettings(10000000, 0)
+	tool_gun:SetDamage(0)
+	tool_gun:SetSpread(0)
+	tool_gun:SetSightTransform(Vector(0, 0, -13.75), Rotator(-0.5, 0, 0))
+	tool_gun:SetLeftHandTransform(Vector(2, -1.5, 0), Rotator(0, 50, 130))
+	tool_gun:SetRightHandOffset(Vector(-35, -5, 5))
+	tool_gun:SetHandlingMode(HandlingMode.SingleHandedWeapon)
+	tool_gun:SetCadence(0.7)
+	tool_gun:SetParticlesBarrel("nanos-world::P_Weapon_BarrelSmoke")
+	tool_gun:SetParticlesShells("nanos-world::P_Weapon_Shells_762x39")
+	tool_gun:SetSoundDry("nanos-world::A_Pistol_Dry")
+	tool_gun:SetSoundZooming("nanos-world::A_AimZoom")
+	tool_gun:SetSoundAim("nanos-world::A_Rattle")
+	tool_gun:SetSoundFire("nanos-world::A_HeavyShot")
+	tool_gun:SetAnimationCharacterFire("nanos-world::AM_Mannequin_Sight_Fire_Heavy")
+	tool_gun:SetCrosshairSetting(CrosshairType.Tee)
+	tool_gun:SetUsageSettings(false, false)
 
 	-- Let's subscribe for 'Fire' event from this weapon, this will be triggered for every fire it shoots
 	tool_gun:Subscribe("Fire", function(weap, shooter)
@@ -63,7 +42,7 @@ function FireworkGun(location, rotation)
 		-- this way we must destroy it manually after all
 		-- The Asset Pack which we are using to get the particles contains two Shells: 'PS_TS_FireworksShell' and 'PS_TS_FireworksShell_Palm'
 		-- You can use the another one to get more cool effects!
-		local particle = Particle(Vector(), Rotator(), "TS_Fireworks::PS_TS_FireworksShell", false, true)
+		local particle = Particle(Vector(), Rotator(), "ts-fireworks::PS_TS_FireworksShell", false, true)
 
 		-- Attaches the particle to the projectile prop
 		particle:AttachTo(prop)
@@ -76,12 +55,12 @@ function FireworkGun(location, rotation)
 		prop:SetNetworkAuthority(shooter:GetPlayer(), 1000)
 
 		-- Calls the client to spawn the 'Launch' sound
-		Events.BroadcastRemote("SpawnFireworkSound", {particle})
+		Events.BroadcastRemote("SpawnFireworkSound", particle)
 
 		-- After 1500 miliseconds, explode the firework
-		Timer.SetTimeout(1500, function(pr)
+		Timer.SetTimeout(function(pr)
 			-- Calls the client to spawn the 'Explosion' sound at the projectile location
-			Events:BroadcastRemote("ExplodeFireworkSound", pr:GetLocation())
+			Events.BroadcastRemote("ExplodeFireworkSound", pr:GetLocation())
 
 			-- Spawns the Particle Explosion.
 			-- This Asset Pack also contains the following Particles, feel free to try them!
