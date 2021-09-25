@@ -13,7 +13,8 @@ function FireworkGun(location, rotation)
 	tool_gun:SetAmmoSettings(10000000, 0)
 	tool_gun:SetDamage(0)
 	tool_gun:SetSpread(0)
-	tool_gun:SetSightTransform(Vector(0, 0, -13.75), Rotator(-0.5, 0, 0))
+	tool_gun:SetRecoil(0)
+	tool_gun:SetSightTransform(Vector(0, 0, -10.5), Rotator(-0.5, 0, 0))
 	tool_gun:SetLeftHandTransform(Vector(2, -1.5, 0), Rotator(0, 50, 130))
 	tool_gun:SetRightHandOffset(Vector(-35, -5, 5))
 	tool_gun:SetHandlingMode(HandlingMode.SingleHandedWeapon)
@@ -25,7 +26,7 @@ function FireworkGun(location, rotation)
 	tool_gun:SetSoundAim("nanos-world::A_Rattle")
 	tool_gun:SetSoundFire("nanos-world::A_HeavyShot")
 	tool_gun:SetAnimationCharacterFire("nanos-world::AM_Mannequin_Sight_Fire_Heavy")
-	tool_gun:SetCrosshairSetting(CrosshairType.Tee)
+	tool_gun:SetCrosshairMaterial("nanos-world::MI_Crosshair_Tee")
 	tool_gun:SetUsageSettings(false, false)
 
 	-- Let's subscribe for 'Fire' event from this weapon, this will be triggered for every fire it shoots
@@ -44,15 +45,11 @@ function FireworkGun(location, rotation)
 		-- You can use the another one to get more cool effects!
 		local particle = Particle(Vector(), Rotator(), "ts-fireworks::PS_TS_FireworksShell", false, true)
 
-		-- Attaches the particle to the projectile prop
-		particle:AttachTo(prop)
+		-- Attaches the particle to the projectile prop, will be auto destroyed after 2 seconds after the prop is destroyed
+		particle:AttachTo(prop, AttachmentRule.SnapToTarget, "", 2)
 
 		-- Impulses the Projectile forward
 		prop:AddImpulse(forward_vector * Vector(10000), true)
-
-		-- Sets the shooter to be the Network Authority of this Projectile for the next 1000 miliseconds
-		-- This way only the shooter will be reponsible to handle the physics of this object (for 1 second)
-		prop:SetNetworkAuthority(shooter:GetPlayer(), 1000)
 
 		-- Calls the client to spawn the 'Launch' sound
 		Events.BroadcastRemote("SpawnFireworkSound", particle)
@@ -85,11 +82,6 @@ function FireworkGun(location, rotation)
 			--  bool: 'BlastSmoke', 'TailSmoke'
 			--  float: 'BurstMulti', 'SparkleMulti'
 		end, 1500, prop, particle)
-
-		-- After 2500 miliseconds, destroy the particle (so the trail can keep a little bit longer)
-		Timer.SetTimeout(function(pa)
-			pa:Destroy()
-		end, 2500, particle)
 	end)
 
 	return tool_gun
