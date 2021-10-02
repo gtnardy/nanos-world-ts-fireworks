@@ -45,8 +45,8 @@ function FireworkGun(location, rotation)
 		-- You can use the another one to get more cool effects!
 		local particle = Particle(Vector(), Rotator(), "ts-fireworks::PS_TS_FireworksShell", false, true)
 
-		-- Attaches the particle to the projectile prop, will be auto destroyed after 2 seconds after the prop is destroyed
-		particle:AttachTo(prop, AttachmentRule.SnapToTarget, "", 2)
+		-- Attaches the particle to the projectile prop, will be auto destroyed after 1 seconds after the prop is destroyed
+		particle:AttachTo(prop, AttachmentRule.SnapToTarget, "", 1)
 
 		-- Impulses the Projectile forward
 		prop:AddImpulse(forward_vector * Vector(10000), true)
