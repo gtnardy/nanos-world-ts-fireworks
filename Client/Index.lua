@@ -10,6 +10,6 @@ Events.Subscribe("ExplodeFireworkSound", function(location)
 end)
 
 Package.Subscribe("Load", function()
-	Package.Call("sandbox", "AddSpawnMenuItem", "ts-fireworks", "tools", "FireworkGun", "Firework Gun", "assets///nanos-world/Thumbnails/SK_FlareGun.jpg")
+	Package.Call("sandbox", "AddSpawnMenuItem", "ts-fireworks", "tools", "FireworkGun", "Firework Gun", "assets://nanos-world/Thumbnails/SK_FlareGun.jpg")
 	return false
 end)
