@@ -1,30 +1,29 @@
-# package configurations
-[package]
-    # package name
-    name =                  "Fireworks Tools"
+# vault configurations
+[meta]
+    # friendly name
+    title =                 "Fireworks Tools"
     # contributors
     author =                "nanos™"
     # version
-    version =               "2.0.0"
-    # image URL
-    image =                 "https://i.imgur.com/tQXi0xt.jpg"
-    # package type: 'script' (normal package), 'game-mode' (unique package - can only load one at a time), 'library' (doesn't start a Lua VM) or 'loading-screen' (special package for loading screen)
-    type =                  "script"
-    # whether to force the custom map script to do not load
-    force_no_map_script =   false
+    version =               "2.1.0"
+
+# script configurations
+[script]
+    # whether to force the custom map package to do not load
+    force_no_map_package =  false
     # auto destroy all entities spawned by this package when it unloads
     auto_cleanup =          true
     # the game version (major.minor) at the time this package was created, for granting compatibility between breaking changes
     compatibility_version = "1.25"
     # packages requirements
     packages_requirements = [
-        
+
     ]
     # asset packs requirements
     assets_requirements = [
         "ts-fireworks",
     ]
-    # compatible maps - maps to be highlighted when starting a new game through main menu
-    compatible_maps = [
-        
+    # compatible game modes
+    compatible_game_modes = [
+		"sandbox"
     ]
