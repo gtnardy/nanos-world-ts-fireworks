@@ -1,13 +1,13 @@
 # nanos-world-ts-fireworks
+
 nanos world Firework Tool using TS Fireworks assets
 
 
-## Download and rename it as `ts-fireworks-tools`
-
-How to use and spawn a Firework Gun using this package:
-
-In your package:
+This Package exposes the `Firework` and `FireworkGun` classes, which you can spawn like:
 
 ```lua
-local firework_gun = Package.Call("ts-fireworks-tools", "SpawnFireworkGun", Vector(123, 123, 456), Rotation())
+local forward_vector = Vector(1, 0, 0)
+local my_firework = Firework(Vector(100, 200, 300), forward_vector)
+
+local my_firework_gun = FireworkGun(Vector(100, 200, 300), Rotator(0, 0, 0))
 ```
