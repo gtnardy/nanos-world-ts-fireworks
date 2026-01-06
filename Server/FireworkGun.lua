@@ -30,7 +30,7 @@ function FireworkGun:OnFire(character)
 	local spawn_location = self:GetLocation() + Vector(0, 0, 40) + forward_vector * 100
 
 	-- Spawns the Firework entity
-	local firework = Firework(spawn_location, forward_vector)
+	local firework = Firework(spawn_location, Rotator(0, control_rotation.Yaw - 90, 0), forward_vector)
 end
 
 -- Let's subscribe for 'Fire' event from this weapon, this will be triggered for every fire it shoots

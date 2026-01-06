@@ -10,7 +10,7 @@ function Firework:OnSpawn()
 	-- Attaches the particle to the projectile prop, will be auto destroyed after 1 seconds after the prop is destroyed
 	particle:AttachTo(self, AttachmentRule.SnapToTarget, "", 1)
 
-	local sound = Sound(Vector(), "ts-fireworks::A_Firework_Launch", false, true, SoundType.SFX, 1, 1.5, 400, 100000)
+	local sound = Sound(Vector(), "ts-fireworks::A_Firework_Launch_Cue", false, true, SoundType.SFX, 1, 1.5, 400, 100000)
 	sound:AttachTo(self)
 end
 
@@ -22,10 +22,10 @@ function Firework:OnExplode(location, rotation, particle_asset)
 	end
 
 	-- Explosion sound
-	Sound(location, "ts-fireworks::A_Firework_Explosion_Fizz", false, true, SoundType.SFX, 3, 1, 400, 100000)
+	Sound(location, "ts-fireworks::A_Firework_Explosion_Fizz_Cue", false, true, SoundType.SFX, 3, 1, 400, 100000)
 
 	-- Spawns the Particle Explosion.
-	local particle_burst = Particle(location, Rotator(0, rotation.Yaw + 90, 0), particle_asset, true, true)
+	local particle_burst = Particle(location, Rotator(0, rotation.Yaw, 0), particle_asset, true, true)
 
 	-- Those particles make it available to tweak some of their properties, let's set the BlastColor to red
 	particle_burst:SetParameterColor("BlastColor", Color.RandomPalette())
