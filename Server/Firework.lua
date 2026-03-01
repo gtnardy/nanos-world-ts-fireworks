@@ -11,21 +11,21 @@ Firework.particles = {
 
 
 function Firework:Constructor(location, rotation, forward_vector)
-	self.Super:Constructor(location or Vector(), rotation or Rotator(), "nanos-world::SM_None")
+	self.Super:Constructor(location or Vector(), rotation or Rotator(), "nanos-world::SM_None", CollisionType.StaticOnly, true, GrabMode.Disabled)
 
 	-- Impulses the Projectile forward
 	self:AddImpulse(forward_vector * 10000, true)
 
 	-- After 1500 milliseconds, explode the firework
 	Timer.Bind(
-		Timer.SetTimeout(function(firework, explosion_rotation)
+		Timer.SetTimeout(function()
 			local particle_asset = Firework.particles[math.random(#Firework.particles)]
 
 			-- Calls the client to spawn the 'Explosion' sound and particle at the projectile location
-			firework:BroadcastRemoteEvent("Explode", firework:GetLocation(), explosion_rotation, particle_asset)
+			self:BroadcastRemoteEvent("Explode", self:GetLocation(), rotation, particle_asset)
 
 			-- Destroys the projectile
-			firework:Destroy()
-		end, 1500, self, rotation),
+			self:Destroy()
+		end, 1500),
 	self)
 end

@@ -1,4 +1,8 @@
-FireworkGun = Weapon.Inherit("FireworkGun")
+---@class FireworkGun : Weapon
+---@overload fun(location: Vector, rotation: Rotator)
+FireworkGun = Weapon.Inherit("FireworkGun", {
+	tab = "tools", -- Overrides the tab (so it won't get at 'weapons' tab)
+})
 
 function FireworkGun:Constructor(location, rotation)
 	self.Super:Constructor(location or Vector(), rotation or Rotator(), "nanos-world::SK_FlareGun_Short")
@@ -34,4 +38,4 @@ function FireworkGun:OnFire(character)
 end
 
 -- Let's subscribe for 'Fire' event from this weapon, this will be triggered for every fire it shoots
-FireworkGun.SubscribeRemote("Fire", FireworkGun.OnFire)
+FireworkGun.Subscribe("Fire", FireworkGun.OnFire)
