@@ -5,7 +5,7 @@ FireworkGun = Weapon.Inherit("FireworkGun", {
 })
 
 function FireworkGun:Constructor(location, rotation)
-	self.Super:Constructor(location or Vector(), rotation or Rotator(), "nanos-world::SK_FlareGun_Short")
+	self.Super:Constructor(location or Vector(), rotation or Rotator(), "nanos-world::SK_FlareGun_Short", CollisionType.Auto, true, true)
 
 	self:SetAmmoSettings(10000000, 0)
 	self:SetDamage(0)

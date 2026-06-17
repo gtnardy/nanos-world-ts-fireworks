@@ -21,8 +21,8 @@ function Firework:Constructor(location, rotation, forward_vector)
 		Timer.SetTimeout(function()
 			local particle_asset = Firework.particles[math.random(#Firework.particles)]
 
-			-- Calls the client to spawn the 'Explosion' sound and particle at the projectile location
-			self:BroadcastRemoteEvent("Explode", self:GetLocation(), rotation, particle_asset)
+			-- Calls the client to spawn the 'Explosion' sound and particle at the projectile location (Unreliable as it's mostly visuals)
+			self:BroadcastRemoteEvent("Explode", Reliability.Unreliable, self:GetLocation(), rotation, particle_asset)
 
 			-- Destroys the projectile
 			self:Destroy()
